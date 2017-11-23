@@ -1,0 +1,2 @@
+# JaNoKe-SmartMirror
+A smartmirror
