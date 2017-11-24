@@ -2,52 +2,51 @@ package janoke.smartmirror;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
-public class Mainframe implements KeyListener
+public class Mainframe implements KeyListener, Runnable, FocusListener
 {
 	JFrame frame = new JFrame("SmartMirror - JaNoKe");
-	JPanel panel = new JPanel();
+	JPanel greeterPanel = new JPanel();
+	JPanel contentPanel = new JPanel();
+	Thread anim = new Thread();
+	
+	private boolean init = false;
 	
 	LineBorder whiteBoarder;
 	
-	private Mainframe()
+	public Mainframe()
 	{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setUndecorated(true);
 		frame.getContentPane().setBackground(Color.BLACK);
-		frame.setVisible(true);
 		frame.addKeyListener(this);
+		frame.addFocusListener(this);
 		
-		frame.getContentPane().add(panel);
-		panel.setBackground(Color.BLACK);
+		frame.getContentPane().add(greeterPanel);
+		greeterPanel.setBackground(Color.BLACK);
 		whiteBoarder = new LineBorder(Color.WHITE, 10);
-		panel.setBorder(whiteBoarder);
-		panel.setLayout(new BorderLayout());
-		JLabel greeter = new JLabel("<html><h1 style=\"text-align: center;\">SmartMirror by Jannled, NoahDi and ShadowFury</h1></html>");
+		greeterPanel.setBorder(whiteBoarder);
+		greeterPanel.setLayout(new BorderLayout());
+		JLabel greeter = new JLabel("<html><h1>SmartMirror by Jannled, NoahDi and ShadowFury</h1></html>");
 		greeter.setForeground(Color.WHITE);
-		panel.add(greeter, BorderLayout.CENTER);
+		greeterPanel.add(greeter, BorderLayout.CENTER);
 		
-		Window[] windows = Window.getWindows();
-		GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(windows[0]);
-	}
-	
-	public static void main(String[] args)
-	{
-		System.out.println("Starting SmartMirror with arguments: " + Arrays.toString(args));
-		new Mainframe();
+		frame.setVisible(true);
+		
+		anim = new Thread(this);
+		anim.run();
 	}
 
 	@Override
@@ -72,13 +71,69 @@ public class Mainframe implements KeyListener
 		
 	}
 	
-	public void addComponent(Component comp)
+	public void addComponent(Widget widget)
 	{
-		frame.getContentPane().add(comp);
+		if(!init)
+		{
+			init = true;
+			frame.getContentPane().removeAll();
+		}
+		contentPanel.add(widget);
+		frame.revalidate();
+		frame.repaint();
 	}
 	
-	public void addComponent(Component comp, Object constraints)
+	public void addComponent(Widget widget, Object constraints)
 	{
-		frame.getContentPane().add(comp, constraints);
+		if(!init)
+		{
+			init = true;
+			frame.getContentPane().removeAll();
+		}
+		contentPanel.add(widget, constraints);
+		frame.revalidate();
+		frame.repaint();
+	}
+
+	@Override
+	public void run()
+	{
+		try
+		{
+			Thread.sleep(3000);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		System.out.println("Closing greeter!");
+		frame.getContentPane().removeAll();
+		frame.getContentPane().add(contentPanel);
+	}
+
+	@Override
+	public void focusGained(FocusEvent e)
+	{
+		System.out.println("Focus gained.");
+		setFullscreen(true);
+	}
+
+	@Override
+	public void focusLost(FocusEvent e)
+	{
+		System.out.println("Focus lost.");
+		setFullscreen(false);
+	}
+	
+	public void setFullscreen(boolean fullscreen)
+	{
+		Window[] windows = Window.getWindows();
+		if(fullscreen) 
+		{
+			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(windows[0]);
+		}
+		else
+		{
+			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+		}
 	}
 }
