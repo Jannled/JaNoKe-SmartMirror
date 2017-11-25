@@ -3,7 +3,6 @@ package janoke;
 import java.util.Arrays;
 
 import janoke.smartmirror.Mainframe;
-import janoke.smartmirror.widgets.Weather;
 
 public class Demonstration
 {
@@ -14,6 +13,6 @@ public class Demonstration
 		System.out.println("Starting SmartMirror with arguments: " + Arrays.toString(args));
 		mf = new Mainframe();
 		
-		mf.addComponent(new Weather());
+		mf.openWindow(args);
 	}
 }
