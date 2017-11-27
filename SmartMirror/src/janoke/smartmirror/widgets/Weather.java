@@ -36,10 +36,10 @@ public class Weather extends GridPane
 	
 	public void query()
 	{
-		int[] windData;
-		int[] weatherData;
-		int[] rainfallData;
-		int[] temperatureData;
+		int[] windData = new int[15];
+		int[] weatherData = new int[15];
+		int[] rainfallData = new int[15];
+		int[] temperatureData = new int[15];
 		
 		try
 		{
@@ -70,29 +70,45 @@ public class Weather extends GridPane
 			weatherData = new int[weather.length-1];
 			for(int i=1; i<weather.length; i++)
 			{
-				if(weather[i].contains("bkn")) weatherData[i+1] = i;
-				else if(weather[i].contains("bkn")) weatherData[i+1] = i;
-				else if(weather[i].contains("bkn")) weatherData[i+1] = i;
-				else if(weather[i].contains("bkn")) weatherData[i+1] = i;
-				else if(weather[i].contains("bkn")) weatherData[i+1] = i;
+				if(weather[i].contains("bkn")) weatherData[i-1] = 0;
+				else if(weather[i].contains("few")) weatherData[i-1] = 1;
+				else if(weather[i].contains("ovc")) weatherData[i-1] = 2;
+				else if(weather[i].contains("sct")) weatherData[i-1] = 3;
+				else if(weather[i].contains("skc")) weatherData[i-1] = 4;
 			}
 			
 			//Rainfall
-			data[6].split("");
+			String[] rain = data[6].split("<td class");
+			rainfallData = new int[rain.length-1];
+			for(int i=1; i<rain.length; i++)
+			{
+				rain[i] = rain[i].substring(rain[i].indexOf(">")+1, rain[i].indexOf("<"));
+				try {rainfallData[i-1] = Integer.parseInt(rain[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace();}
+			}
 			
 			//Air Temperature
-			data[8].split("");
-			
+			String[] temperature = data[8].split("<td class");
+			temperatureData = new int[temperature.length-1];
+			for(int i=1; i<temperature.length; i++)
+			{
+				temperature[i] = temperature[i].substring(temperature[i].indexOf(">")+1, temperature[i].indexOf("<"));
+				try {temperatureData[i-1] = Integer.parseInt(temperature[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace();}
+			}
+			System.out.println("Parsed data from WindFinder.com");
+
 		} catch (MalformedURLException e)
 		{
 			e.printStackTrace();
 		} catch (IOException e)
 		{
 			e.printStackTrace();
-		}
+		}			
+		
+		//Display the data
+		update(temperatureData, weatherData, rainfallData, windData);
 	}
 	
-	public void update(int[] temperature, int[] weather[], int[] rainfall, int[] windspeed)
+	public void update(int[] temperature, int[] weather, int[] rainfall, int[] windspeed)
 	{	
 		Text d1 = new Text(dateFormat.format(calendar.getTime()));
 		calendar.add(Calendar.DATE, 1);
@@ -107,6 +123,11 @@ public class Weather extends GridPane
 		add(d1, 0, 0, 5, 1);
 		add(d2, 5, 0, 5, 1);
 		add(d3, 10, 0, 5, 1);
+		
+		populateRow(1, 0, weather, "");
+		populateRow(2, 0, rainfall, "mm");
+		populateRow(3, 0, temperature, "°C");
+		populateRow(4, 0, windspeed, "bft");
 	}
 	
 	/**
@@ -120,7 +141,9 @@ public class Weather extends GridPane
 	{
 		for(int i=0; i<stuff.length; i++)
 		{
-			add(new Text(stuff[i] + unit), columnOffset + i, row);
+			Text t = new Text(stuff[i] + unit);
+			t.setFill(Color.WHITE);
+			add(t, columnOffset + i, row);
 		}
 	}
 }
