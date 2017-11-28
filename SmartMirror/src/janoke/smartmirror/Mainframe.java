@@ -2,27 +2,33 @@ package janoke.smartmirror;
 
 import janoke.smartmirror.widgets.Weather;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class Mainframe extends Application implements EventHandler<KeyEvent>
+public class Mainframe extends Application implements EventHandler<KeyEvent>, Runnable
 {
 	public Scene content;
 	public Scene greeter;
 	
+	private Pane contentPane;
+	
+	final Font font; 	
 	Stage stage;
 	
-	public Mainframe()
+	public Mainframe(Pane contentPane)
 	{
-		
+		this.contentPane = contentPane;
+		font = Font.loadFont(Mainframe.class.getResource("Futura_Md_Bt.ttf").toExternalForm(), 12);
 	}
 	
 	@Override
@@ -30,15 +36,15 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>
 	{
 		this.stage = stage;
 		
-		//stage.setFullScreen(true);
-		stage.setFullScreenExitHint("");
+		fullScreen();
 		stage.setTitle("JaNoKe SmartMirror");
 		
 		//Greeter Pane
 		BorderPane greeterPane = new BorderPane();
 		greeterPane.setStyle("-fx-background-color: #000000;"
 				+ "-fx-border-color: white;"
-				+ "-fx-border-width: 10 10 10 10;");
+				+ "-fx-border-width: 10 10 10 10;"
+				+ "-fx-font-family: \"" + font.getFamily() +"\";");
 		
 		//Greeter Text
 		Label lbl = new Label("SmartMirror by NoahDi, ShadowFury17 and Jannled");
@@ -46,9 +52,9 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>
 		lbl.setFont(new Font("Arial", 30));
 		greeterPane.setCenter(lbl);
 		
-		//Actual Content Pane
-		VBox contentPane = new VBox();
-		contentPane.setStyle("-fx-background-color: #000000;");
+		//Set content pane style
+		contentPane.setStyle("-fx-background-color: #000000;"
+				+ "-fx-font-family: \"" + font.getFamily() +"\";");
 		
 		//Set Scenes
 		greeter = new Scene(greeterPane);
@@ -62,16 +68,10 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>
 		stage.setScene(greeter);
 		stage.show();
 		
-		//Show actual content
-		stage.setScene(content);
-		//stage.setFullScreen(true);
-		
 		contentPane.getChildren().add(new Weather("Soest / Bad Sassendorf"));
-	}
-	
-	public void openWindow(String[] args)
-	{
-		launch(args);
+		
+		Platform.runLater(this);
+		
 	}
 
 	@Override
@@ -80,7 +80,33 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>
 		if(e.getCode() == KeyCode.ESCAPE)
 		{
 			System.out.println("Exit key pressed. Closing!");
-			//System.exit(0);
+			System.exit(0);
 		}
+	}
+
+	@Override
+	public void run()
+	{
+		try
+		{
+			Thread.sleep(3000);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		stage.setScene(content);
+		fullScreen();
+	}
+	
+	public void fullScreen()
+	{
+		stage.setFullScreen(true);
+		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+		stage.setFullScreenExitHint("");
+	}
+	
+	public void add()
+	{
+		
 	}
 }
