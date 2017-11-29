@@ -124,10 +124,12 @@ public class Weather extends GridPane
 		add(d2, 5, 0, 5, 1);
 		add(d3, 10, 0, 5, 1);
 		
-		populateRow(1, 0, weather, "");
-		populateRow(2, 0, rainfall, "mm");
-		populateRow(3, 0, temperature, "°C");
-		populateRow(4, 0, windspeed, "bft");
+		populateRow(1, 0, new int[] {7, 10, 13, 16, 19, 7, 10, 13, 16, 19, 7, 10, 13, 16, 19}, ":00");
+		
+		populateRow(2, 0, weather, "");
+		populateRow(3, 0, rainfall, "mm");
+		populateRow(4, 0, temperature, "°C");
+		populateRow(5, 0, windspeed, "bft");
 	}
 	
 	/**

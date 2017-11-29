@@ -1,5 +1,7 @@
 package janoke.smartmirror;
 
+import java.net.URL;
+
 import janoke.smartmirror.widgets.Weather;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -11,61 +13,59 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Mainframe extends Application implements EventHandler<KeyEvent>, Runnable
 {
-	public Scene content;
-	public Scene greeter;
+	private Scene mirror;
 	
 	private Pane contentPane;
 	
-	final Font font; 	
+	public static Mainframe instance;
+	
+	Font font; 	
 	Stage stage;
 	
-	public Mainframe(Pane contentPane)
+	public Mainframe()
 	{
-		this.contentPane = contentPane;
-		font = Font.loadFont(Mainframe.class.getResource("Futura_Md_Bt.ttf").toExternalForm(), 12);
+		loadFont("Futura_Md_Bt.ttf");
+		instance = this;
 	}
 	
-	@Override
 	public void start(Stage stage) throws Exception
 	{
 		this.stage = stage;
+		if(font == null) font = Font.getDefault();
 		
 		fullScreen();
 		stage.setTitle("JaNoKe SmartMirror");
 		
 		//Greeter Pane
 		BorderPane greeterPane = new BorderPane();
-		greeterPane.setStyle("-fx-background-color: #000000;"
-				+ "-fx-border-color: white;"
-				+ "-fx-border-width: 10 10 10 10;"
-				+ "-fx-font-family: \"" + font.getFamily() +"\";");
+		greeterPane.setStyle("-fx-font-family: \"" + font.getFamily() +"\";"
+				+ "-fx-border-width: 10 10 10 10;");
 		
 		//Greeter Text
 		Label lbl = new Label("SmartMirror by NoahDi, ShadowFury17 and Jannled");
-		lbl.setTextFill(Color.WHITE);
-		lbl.setFont(new Font("Arial", 30));
+		lbl.setStyle("-fx-font-size: 30;");
 		greeterPane.setCenter(lbl);
 		
 		//Set content pane style
-		contentPane.setStyle("-fx-background-color: #000000;"
-				+ "-fx-font-family: \"" + font.getFamily() +"\";");
+		contentPane = new VBox();
+		contentPane.setStyle("-fx-font-family: \"" + font.getFamily() +"\";");
 		
-		//Set Scenes
-		greeter = new Scene(greeterPane);
-		content = new Scene(contentPane);
+		//Set Scene
+		mirror = new Scene(greeterPane);
+		String style = Mainframe.class.getResource("mirror.css").toExternalForm();
+		mirror.getStylesheets().add(style);
 		
 		//Register Exit Key
-		greeter.setOnKeyPressed(this);
-		content.setOnKeyPressed(this);
+		mirror.setOnKeyPressed(this);
 		
 		//Show Greeter
-		stage.setScene(greeter);
+		stage.setScene(mirror);
 		stage.show();
 		
 		contentPane.getChildren().add(new Weather("Soest / Bad Sassendorf"));
@@ -94,7 +94,7 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>, Ru
 		{
 			e.printStackTrace();
 		}
-		stage.setScene(content);
+		mirror.setRoot(contentPane);
 		fullScreen();
 	}
 	
@@ -105,8 +105,32 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>, Ru
 		stage.setFullScreenExitHint("");
 	}
 	
-	public void add()
+	public void loadFont(String name)
 	{
-		
+		URL s = Mainframe.class.getResource(name);
+		if(s!=null)
+		{
+			font = Font.loadFont(s.toExternalForm(), 12);
+		}
+		else 
+		{
+			System.err.println("Could not find Font " + name + ". Falling back to default one!");
+		}
+	}
+	
+	public Pane getContentPane()
+	{
+		return contentPane;
+	}
+	
+	/**
+	 * Replace the content pane but keep all Nodes.
+	 * @param newContentPane The new content pane.
+	 */
+	public void replaceContentPane(Pane newContentPane)
+	{
+		newContentPane.getChildren().addAll(contentPane.getChildren());
+		contentPane = newContentPane;
+		mirror.setRoot(contentPane);
 	}
 }
