@@ -5,9 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 
-public class Time extends Label
+public class Time extends Pane
 {
 	DateFormat dateFormat = new SimpleDateFormat("EEEE, dd.MM.yy");
 	Calendar calendar = Calendar.getInstance();

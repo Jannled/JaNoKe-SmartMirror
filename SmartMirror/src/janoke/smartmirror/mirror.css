@@ -1,6 +1,11 @@
 .root{
 	-fx-base: rgb(255, 255, 255);
-	-fx-text-fill: rgb(255, 255, 255);
 	-fx-background: rgb(0, 0, 0);
+	
+	-fx-font-size: 15;
+	-fx-text-inner-color: rgb(255, 255, 255);
+	-fx-text-fill: rgb(255, 255, 255);
+	
+	-fx-border-width: 10 10 10 10;
 	-fx-border-color: rgb(255, 255, 255);
 }

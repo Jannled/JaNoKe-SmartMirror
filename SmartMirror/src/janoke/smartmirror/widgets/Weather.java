@@ -9,9 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Scanner;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 public class Weather extends GridPane
 {	
@@ -22,8 +21,8 @@ public class Weather extends GridPane
 	
 	public Weather(String place)
 	{
-		setHgap(10);
-		setVgap(5);
+		setHgap(20);
+		setVgap(3);
 		
 		place = place.toLowerCase();
 		place = place.replace(" / ", "_");
@@ -110,22 +109,17 @@ public class Weather extends GridPane
 	
 	public void update(int[] temperature, int[] weather, int[] rainfall, int[] windspeed)
 	{	
-		Text d1 = new Text(dateFormat.format(calendar.getTime()));
+		Label d1 = new Label(dateFormat.format(calendar.getTime()));
 		calendar.add(Calendar.DATE, 1);
-		Text d2 = new Text(dateFormat.format(calendar.getTime()));
+		Label d2 = new Label(dateFormat.format(calendar.getTime()));
 		calendar.add(Calendar.DATE, 1);
-		Text d3 = new Text(dateFormat.format(calendar.getTime()));
-		
-		d1.setFill(Color.WHITE);
-		d2.setFill(Color.WHITE);
-		d3.setFill(Color.WHITE);
+		Label d3 = new Label(dateFormat.format(calendar.getTime()));
 		
 		add(d1, 0, 0, 5, 1);
 		add(d2, 5, 0, 5, 1);
 		add(d3, 10, 0, 5, 1);
 		
 		populateRow(1, 0, new int[] {7, 10, 13, 16, 19, 7, 10, 13, 16, 19, 7, 10, 13, 16, 19}, ":00");
-		
 		populateRow(2, 0, weather, "");
 		populateRow(3, 0, rainfall, "mm");
 		populateRow(4, 0, temperature, "°C");
@@ -143,9 +137,8 @@ public class Weather extends GridPane
 	{
 		for(int i=0; i<stuff.length; i++)
 		{
-			Text t = new Text(stuff[i] + unit);
-			t.setFill(Color.WHITE);
-			add(t, columnOffset + i, row);
+			Label l = new Label(stuff[i] + unit);
+			add(l, columnOffset + i, row);
 		}
 	}
 }
