@@ -7,6 +7,8 @@ import janoke.smartmirror.widgets.News;
 import janoke.smartmirror.widgets.Time;
 import janoke.smartmirror.widgets.Weather;
 import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.layout.BorderPane;
 
 public class Demonstration implements Runnable
 {
@@ -35,8 +37,10 @@ public class Demonstration implements Runnable
 		Time t = new Time();
 		Weather w = new Weather("Soest / Bad Sassendorf");
 		News n = new News();
-		Mainframe.instance.addWidget(t);
-		Mainframe.instance.addWidget(w);
-		Mainframe.instance.addWidget(n);
+		
+		Mainframe.instance.getContentPane().setLeft(n);
+		Mainframe.instance.getContentPane().setRight(w);
+		Mainframe.instance.getContentPane().setBottom(t);
+		BorderPane.setAlignment(t, Pos.CENTER);
 	}
 }

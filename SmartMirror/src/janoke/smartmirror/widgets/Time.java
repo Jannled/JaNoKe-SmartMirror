@@ -3,15 +3,22 @@ package janoke.smartmirror.widgets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
 public class Time extends Pane
 {
+	boolean running = true;
+	
+	Label noah = new Label();
 	DateFormat dateFormat = new SimpleDateFormat("EEEE, dd.MM.yy");
+	DateFormat timeFormat = new SimpleDateFormat("H:mm:ss"); 
 	Calendar calendar = Calendar.getInstance();
-	GregorianCalendar now = new GregorianCalendar(); 
 	
 	public Time()
 	{
@@ -19,8 +26,23 @@ public class Time extends Pane
 	}
 	
 	public void init()
-	{
-		dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG); // 14.04.12 21:34:07 MESZ 
-        System.out.println(dateFormat.format(now.getTime()));
+	{ 
+		System.out.println(dateFormat.format(calendar.getTime()));
+		getChildren().add(noah);
+		
+		final Timeline timeline = new Timeline(
+			new KeyFrame(
+				Duration.millis(500),
+				event -> 
+				{
+					noah.setText(timeFormat.format(System.currentTimeMillis()));
+				}
+			));
+		timeline.setCycleCount( Animation.INDEFINITE );
+		timeline.play();
+		
 	}
+	
+	
+	
 }

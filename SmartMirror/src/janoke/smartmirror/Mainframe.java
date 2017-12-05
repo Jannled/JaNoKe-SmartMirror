@@ -5,16 +5,12 @@ import java.net.URL;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -22,7 +18,7 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>, Ru
 {
 	private Scene mirror;
 	
-	private Pane contentPane;
+	private BorderPane contentPane;
 	
 	public static Mainframe instance;
 	
@@ -53,8 +49,7 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>, Ru
 		greeterPane.setCenter(lbl);
 		
 		//Set content pane style
-		contentPane = new VBox(10);
-		((VBox)contentPane).setAlignment(Pos.TOP_CENTER);
+		contentPane = new BorderPane();
 		contentPane.setStyle("-fx-font-family: \"" + font.getFamily() +"\";"
 				+ "-fx-border-color: rgb(0, 0, 0);");
 		
@@ -71,12 +66,6 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>, Ru
 		stage.show();
 		
 		Platform.runLater(this);
-	}
-	
-	public void addWidget(Pane e)
-	{
-		e.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-		contentPane.getChildren().add(e);
 	}
 
 	@Override
@@ -123,19 +112,8 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>, Ru
 		}
 	}
 	
-	public Pane getContentPane()
+	public BorderPane getContentPane()
 	{
 		return contentPane;
-	}
-	
-	/**
-	 * Replace the content pane but keep all Nodes.
-	 * @param newContentPane The new content pane.
-	 */
-	public void replaceContentPane(Pane newContentPane)
-	{
-		newContentPane.getChildren().addAll(contentPane.getChildren());
-		contentPane = newContentPane;
-		mirror.setRoot(contentPane);
 	}
 }
