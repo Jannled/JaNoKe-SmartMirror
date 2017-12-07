@@ -23,13 +23,14 @@ public class Time extends Pane
 	public Time()
 	{
 		init();
+		setMaxSize(Pane.USE_PREF_SIZE, Pane.USE_PREF_SIZE);
 	}
 	
 	public void init()
 	{ 
 		System.out.println(dateFormat.format(calendar.getTime()));
 		getChildren().add(noah);
-		noah.setStyle("-fx-font-size: 30;");
+		noah.setStyle("-fx-font-size: 50;");
 		
 		final Timeline timeline = new Timeline(
 			new KeyFrame(
