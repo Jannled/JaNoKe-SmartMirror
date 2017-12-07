@@ -29,12 +29,13 @@ public class Time extends Pane
 	{ 
 		System.out.println(dateFormat.format(calendar.getTime()));
 		getChildren().add(noah);
+		noah.setStyle("-fx-font-size: 30;");
 		
 		final Timeline timeline = new Timeline(
 			new KeyFrame(
 				Duration.millis(500),
 				event -> 
-				{
+				{	
 					noah.setText(timeFormat.format(System.currentTimeMillis()));
 				}
 			));
