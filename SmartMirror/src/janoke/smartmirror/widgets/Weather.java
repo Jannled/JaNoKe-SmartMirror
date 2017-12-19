@@ -104,10 +104,20 @@ public class Weather extends GridPane
 		}			
 		
 		//Display the data
-		update(temperatureData, weatherData, rainfallData, windData);
+		WeatherDay[] wf = new WeatherDay[3];
+		for(int i=0; i<3; i++)
+		{
+			int[] temperature1 = new int[5];
+			int[] weather1 = new int[5];
+			System.arraycopy(temperatureData, i*5, temperature1, 0, 5);
+			System.arraycopy(weatherData, i*5, weather1, 0, 5);
+			WeatherDay day = new WeatherDay(dateFormat.format(calendar.getTime()), temperature1, weather1);
+			calendar.add(Calendar.DATE, 1);
+			wf[i] = day;
+		}
 	}
 	
-	public void update(int[] temperature, int[] weather, int[] rainfall, int[] windspeed)
+	public void update(WeatherDay[] days)
 	{	
 		Label d1 = new Label(dateFormat.format(calendar.getTime()));
 		calendar.add(Calendar.DATE, 1);
@@ -115,30 +125,65 @@ public class Weather extends GridPane
 		calendar.add(Calendar.DATE, 1);
 		Label d3 = new Label(dateFormat.format(calendar.getTime()));
 		
-		add(d1, 0, 0, 5, 1);
-		add(d2, 5, 0, 5, 1);
-		add(d3, 10, 0, 5, 1);
 		
-		populateRow(1, 0, new int[] {7, 10, 13, 16, 19, 7, 10, 13, 16, 19, 7, 10, 13, 16, 19}, ":00");
-		populateRow(2, 0, weather, "");
-		populateRow(3, 0, rainfall, "mm");
-		populateRow(4, 0, temperature, "°C");
-		populateRow(5, 0, windspeed, "bft");
 	}
 	
-	/**
-	 * Populate a single row in the GridPane
-	 * @param row The row to fill the data in.
-	 * @param columnOffset The first column to start populating from.
-	 * @param stuff The data to fill in.
-	 * @param unit The unit of the data (for e.g. °C).
-	 */
-	public void populateRow(int row, int columnOffset, int[] stuff, String unit)
+	public static int[] minMax(int[] values)
 	{
-		for(int i=0; i<stuff.length; i++)
+		int[] output = new int[2];
+		
+		for(int i=0; i<values.length; i++)
 		{
-			Label l = new Label(stuff[i] + unit);
-			add(l, columnOffset + i, row);
+			if(values[i] < output[0])
+			{
+				output[0] = values[i];
+			}
+			else if(values[i] > output[1])
+			{
+				output[1] = values[i];
+			}
 		}
+		return output;
+	}
+}
+
+class WeatherFormat
+{
+	private WeatherDay[] days;
+	
+	public WeatherFormat(WeatherDay[] days)
+	{
+		this.days = days;
+	}
+	
+	WeatherDay getWeaterDay(int day)
+	{
+		return days[day];
+	}
+}
+
+class WeatherDay
+{
+	String date;
+	int temperatureMin, temperatureMax, weatherMin, weatherMax;
+	
+	public WeatherDay(String date, int[] temperature, int[] weather)
+	{
+		this.date = date;
+		int[] tmm = Weather.minMax(temperature);
+		int[] wmm = Weather.minMax(weather);
+		temperatureMin = tmm[0];
+		temperatureMax = tmm[1];
+		weatherMin = wmm[0];
+		weatherMax = wmm[1];
+	}
+	
+	public WeatherDay(String date, int temperatureMin, int temperatureMax, int weatherMin, int weatherMax)
+	{
+		this.date = date;
+		this.temperatureMin = temperatureMin;
+		this.temperatureMax = temperatureMax;
+		this.weatherMin = weatherMin;
+		this.weatherMax = weatherMax;
 	}
 }
