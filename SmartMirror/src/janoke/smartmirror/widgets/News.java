@@ -2,21 +2,22 @@ package janoke.smartmirror.widgets;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
 
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
+import javafx.scene.control.Label;
 
 public class News extends VBox
 {
 	
+	Label newsLabel = new Label();
+	
 	public News()
 	{
-		System.out.println(readRSSFeed("http://www.tagesschau.de/xml/rss2"));
+		init();
 
 	}
 	
@@ -40,7 +41,8 @@ public class News extends VBox
                     
                     int lastPos = temp.indexOf("</title>");
                     temp = temp.substring(0,lastPos);
-                    sourceCode += temp + "\n" ;
+                    sourceCode += temp + "\n" ; 
+                    
                 }
                 else if(line.contains("<description>"))
                 {
@@ -52,7 +54,8 @@ public class News extends VBox
                     
                     int lastPos = temp.indexOf("</description>");
                     temp = temp.substring(0,lastPos);
-                    sourceCode += temp + "\n" ;
+                    sourceCode += temp + "\n" ;   
+                
                 }
                 else if(line.contains("<pubDate>"))
                 {
@@ -65,10 +68,8 @@ public class News extends VBox
                     int lastPos = temp.indexOf("</pubDate>");
                     temp = temp.substring(0,lastPos);
                     sourceCode += temp + "\n" ;
-                }
-                	
-            }
-            
+                }   	
+            }                    
             in.close();
             return sourceCode;
         } 
@@ -82,9 +83,14 @@ public class News extends VBox
             System.out.println("Something went wrong reading the contents");
         }
         return null;
-			
-			
-	}
+}
+	
+	public void init()
+    {
+		getChildren().add(newsLabel);
+    	newsLabel.setText(readRSSFeed("http://www.tagesschau.de/xml/rss2"));
+    	setMaxSize(1000, 1000);
+    }
 	
 }
 	
