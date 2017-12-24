@@ -1,7 +1,9 @@
 package janoke;
 
+import java.io.File;
 import java.util.Arrays;
 
+import janoke.smartmirror.Config;
 import janoke.smartmirror.Mainframe;
 import janoke.smartmirror.widgets.News;
 import janoke.smartmirror.widgets.Time;
@@ -34,8 +36,11 @@ public class Demonstration implements Runnable
 	{
 		System.out.println("Launched second thread.");
 		
+		//Load config
+		Config.parse(new File("SmartMirror.config"));
+		
 		Time t = new Time();
-		Weather w = new Weather("Soest / Bad Sassendorf");
+		Weather w = new Weather(Config.getProperty("city"));
 		News n = new News();
 		
 		Mainframe.instance.getContentPane().setLeft(n);

@@ -11,16 +11,19 @@ import java.util.Scanner;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 public class Weather extends GridPane
 {	
 	DateFormat dateFormat = new SimpleDateFormat("EEEE, dd.MM.yy");
 	Calendar calendar = Calendar.getInstance();
 	
+	String beautyCity;
 	String place;
 	
 	public Weather(String place)
 	{
+		this.beautyCity = place;
 		setHgap(20);
 		setVgap(3);
 		
@@ -50,6 +53,12 @@ public class Weather extends GridPane
 			String website = s.hasNext() ? s.next() : "";
 			stream.close();
 			s.close();
+			
+			//Check if erroring
+			if(website.contains("Error"))
+			{
+				System.err.println("Seems like the spot \"" + beautyCity + "\" does not exist!");
+			}
 			
 			//Do the cutting
 			website = website.split("<table class=\"weathertable last-weathertable\" cellspacing=\"1\" summary=\"forecasts\">")[1];
@@ -93,7 +102,7 @@ public class Weather extends GridPane
 				temperature[i] = temperature[i].substring(temperature[i].indexOf(">")+1, temperature[i].indexOf("<"));
 				try {temperatureData[i-1] = Integer.parseInt(temperature[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace();}
 			}
-			System.out.println("Parsed data from WindFinder.com");
+			System.out.println("Parsed data from WindFinder.com for city " + beautyCity);
 
 		} catch (MalformedURLException e)
 		{
@@ -101,7 +110,10 @@ public class Weather extends GridPane
 		} catch (IOException e)
 		{
 			e.printStackTrace();
-		}			
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
 		
 		//Display the data
 		WeatherDay[] wf = new WeatherDay[3];
@@ -115,22 +127,45 @@ public class Weather extends GridPane
 			calendar.add(Calendar.DATE, 1);
 			wf[i] = day;
 		}
+		update(wf);
 	}
 	
 	public void update(WeatherDay[] days)
 	{	
-		Label d1 = new Label(dateFormat.format(calendar.getTime()));
-		calendar.add(Calendar.DATE, 1);
-		Label d2 = new Label(dateFormat.format(calendar.getTime()));
-		calendar.add(Calendar.DATE, 1);
-		Label d3 = new Label(dateFormat.format(calendar.getTime()));
-		
-		
+		for(int i=0; i<days.length; i++)
+		{
+			Label min1 = new Label("Min: ");
+			Label max1 = new Label("Max: ");
+			Label min2 = new Label("Min: ");
+			Label max2 = new Label("Max: ");
+			Label day = new Label(days[i].date);
+			Label tmin = new Label(days[i].temperatureMin + "°C");
+			Label tmax = new Label(days[i].temperatureMax + "°C");
+			Label wmin = new Label(days[i].weatherMin + "CL");
+			Label wmax = new Label(days[i].weatherMax + "CL");
+			
+			add(day, 0, i*4, 4, 1);
+			
+			add(min1, 0, i*4+1);
+			add(max1, 1, i*4+1);
+			add(min2, 2, i*4+1);
+			add(max2, 3, i*4+1);
+			
+			add(tmin, 0, i*4+2);
+			add(tmax, 1, i*4+2);
+			add(wmin, 2, i*4+2);
+			add(wmax, 3, i*4+2);
+			
+			add(new Text(""), 0, i*4+3);
+			add(new Text(""), 1, i*4+3);
+			add(new Text(""), 2, i*4+3);
+			add(new Text(""), 3, i*4+3);
+		}
 	}
 	
 	public static int[] minMax(int[] values)
 	{
-		int[] output = new int[2];
+		int[] output = new int[] {0x11111111, 0};
 		
 		for(int i=0; i<values.length; i++)
 		{
