@@ -14,7 +14,7 @@ public class Config
 			"news: http://www.tagesschau.de/xml/rss2",
 			"",
 			"#Specify the city you want to recieve weather news from, look it up on WindFinder.com",
-			"city: Soest / Bad Sassendorf"
+			"city: Dortmund"
 			);
 	
 	private static HashMap<String, String> config = new HashMap<String, String>();

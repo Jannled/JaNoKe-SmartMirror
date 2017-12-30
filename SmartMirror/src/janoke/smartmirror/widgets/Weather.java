@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -57,7 +58,9 @@ public class Weather extends GridPane
 			//Check if erroring
 			if(website.contains("Error"))
 			{
-				System.err.println("Seems like the spot \"" + beautyCity + "\" does not exist!");
+				final String err = "Seems like the spot \"" + beautyCity + "\" does not exist!";
+				System.err.println(err);
+				error(err);
 			}
 			
 			//Do the cutting
@@ -70,7 +73,7 @@ public class Weather extends GridPane
 			windData = new int[wind.length-1];
 			for(int i=1; i<wind.length; i++)
 			{
-				try {windData[i-1] = Integer.parseInt(wind[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace();}
+				try {windData[i-1] = Integer.parseInt(wind[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace(); error("NumberFormatException, maybe the website has been updated, please create a bugreport under \"https://github.com/Jannled/JaNoKe-SmartMirror/issues\"!"); return;}
 			}
 			
 			//Weather
@@ -91,7 +94,7 @@ public class Weather extends GridPane
 			for(int i=1; i<rain.length; i++)
 			{
 				rain[i] = rain[i].substring(rain[i].indexOf(">")+1, rain[i].indexOf("<"));
-				try {rainfallData[i-1] = Integer.parseInt(rain[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace();}
+				try {rainfallData[i-1] = Integer.parseInt(rain[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace(); error("NumberFormatException, maybe the website has been updated, please create a bugreport under \"https://github.com/Jannled/JaNoKe-SmartMirror/issues\"!"); return;}
 			}
 			
 			//Air Temperature
@@ -100,19 +103,30 @@ public class Weather extends GridPane
 			for(int i=1; i<temperature.length; i++)
 			{
 				temperature[i] = temperature[i].substring(temperature[i].indexOf(">")+1, temperature[i].indexOf("<"));
-				try {temperatureData[i-1] = Integer.parseInt(temperature[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace();}
+				try {temperatureData[i-1] = Integer.parseInt(temperature[i].split("\n")[0]);} catch (NumberFormatException e) {e.printStackTrace(); error("NumberFormatException, maybe the website has been updated, please create a bugreport under \"https://github.com/Jannled/JaNoKe-SmartMirror/issues\"!"); return;}
 			}
 			System.out.println("Parsed data from WindFinder.com for city " + beautyCity);
 
 		} catch (MalformedURLException e)
 		{
 			e.printStackTrace();
+			error("The specified url to query the weather from is invalid!");
+			return;
+		} catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+			error("Error while downloading the ressource from the server, please check your internet connection!");
+			return;
 		} catch (IOException e)
 		{
 			e.printStackTrace();
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
+			error("IOException while downloading the ressource from the server, please check your internet connection!");
+			return;
+		} catch (ArrayIndexOutOfBoundsException e) 
+		{
 			e.printStackTrace();
+			error("Error while parsing the ressource from the server, maybe the website has been updated, please create a bugreport under \"https://github.com/Jannled/JaNoKe-SmartMirror/issues\"!");
+			return;
 		}
 		
 		//Display the data
@@ -128,6 +142,12 @@ public class Weather extends GridPane
 			wf[i] = day;
 		}
 		update(wf);
+	}
+	
+	public void error(String message)
+	{
+		Label error = new Label(message);
+		add(error, 0, 0);
 	}
 	
 	public void update(WeatherDay[] days)
