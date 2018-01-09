@@ -43,8 +43,8 @@ public class Demonstration implements Runnable
 		Weather w = new Weather(Config.getProperty("city"));
 		News n = new News();
 		
-		Mainframe.instance.getContentPane().setLeft(n);
 		Mainframe.instance.getContentPane().setRight(w);
+		Mainframe.instance.getContentPane().setLeft(n);
 		Mainframe.instance.getContentPane().setBottom(t);
 		BorderPane.setAlignment(t, Pos.CENTER);
 	}

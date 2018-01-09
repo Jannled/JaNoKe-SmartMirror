@@ -8,9 +8,14 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 
+import janoke.smartmirror.Config;
+import janoke.smartmirror.Mainframe;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.TextArea;
 
 public class News extends VBox
 {
@@ -35,8 +40,6 @@ public class News extends VBox
 			{
 				if(line.contains("<title>"))
 				{
-					System.out.println(line);
-					
 					int firstPos = line.indexOf("<title>");
 					String temp = line.substring(firstPos);
 					temp = temp.replace("<title>","");
@@ -48,11 +51,11 @@ public class News extends VBox
 				}
 				else if(line.contains("<description>"))
 				{
-					System.out.println(line);
-					
 					int firstPos = line.indexOf("<description>");
 					String temp = line.substring(firstPos);
 					temp = temp.replace("<description>","");
+					
+					
 					
 					int lastPos = temp.indexOf("</description>");
 					temp = temp.substring(0,lastPos);
@@ -61,8 +64,6 @@ public class News extends VBox
 				}
 				else if(line.contains("<pubDate>"))
 				{
-					System.out.println(line);
-					
 					int firstPos = line.indexOf("<pubDate>");
 					String temp = line.substring(firstPos);
 					temp = temp.replace("<pubDate>","");
@@ -76,6 +77,7 @@ public class News extends VBox
 				}   	
 			}					
 			in.close();
+			System.out.println("Pulled Newsfeed from: " + rssUrl);
 			return sourceCode;
 		} 
 		catch (MalformedURLException ue)
@@ -93,8 +95,11 @@ public class News extends VBox
 	public void init()
 	{
 		getChildren().add(newsLabel);
-		newsLabel.setText(readRSSFeed("http://www.tagesschau.de/xml/rss2"));
-		setMaxSize(1000, 1000);
+		newsLabel.setText(readRSSFeed(Config.getProperty("news")));
+		
+		Region bliblablup = ((Region) Mainframe.instance.getContentPane().getRight());
+		double width = ((Region) Mainframe.instance.getContentPane().getRight()).getWidth();
+		//setMaxSize(((Region) Mainframe.instance.getContentPane().getRight()).getWidth(), Label.USE_PREF_SIZE);
 	}
 	
 }
