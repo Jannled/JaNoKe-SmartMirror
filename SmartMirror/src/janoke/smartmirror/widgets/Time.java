@@ -7,11 +7,11 @@ import java.util.Calendar;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-
 
 public class Time extends Pane
 {
@@ -40,7 +40,7 @@ public class Time extends Pane
 		box.getChildren().add(Spruch);
 		box.getChildren().add(calen);
 		box.getChildren().add(clock);
-		//box.setAlignment();
+		box.setAlignment(Pos.CENTER);
 		clock.setStyle("-fx-font-size: 50;");
 		calen.setStyle("-fx-font-size: 50;");
 		
@@ -53,11 +53,8 @@ public class Time extends Pane
 					calen.setText(dateFormat.format(System.currentTimeMillis()));
 				}
 			));
-		timeline.setCycleCount( Animation.INDEFINITE );
+		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.play();
 		
 	}
-	
-	
-	
 }

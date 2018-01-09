@@ -83,7 +83,7 @@ public class Mainframe extends Application implements EventHandler<KeyEvent>, Ru
 	{
 		try
 		{
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e)
 		{
 			e.printStackTrace();
