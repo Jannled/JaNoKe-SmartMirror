@@ -15,13 +15,14 @@ import javafx.util.Duration;
 
 public class Time extends Pane
 {
+	public static final DateFormat dateFormat = new SimpleDateFormat("EEEE, dd.MM.yy");
+	public static final DateFormat timeFormat = new SimpleDateFormat("H:mm:ss");
+	
 	boolean running = true;
 	
 	Label clock = new Label();
 	Label calen = new Label();
-	Label Spruch = new Label();
-	DateFormat dateFormat = new SimpleDateFormat("EEEE, dd.MM.yy");
-	DateFormat timeFormat = new SimpleDateFormat("H:mm:ss"); 
+	Label Spruch = new Label(); 
 	Calendar calendar = Calendar.getInstance();
 	VBox box = new VBox();
 	
