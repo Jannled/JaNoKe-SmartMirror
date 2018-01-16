@@ -1,21 +1,18 @@
 package janoke.smartmirror.widgets;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.util.Date;
+
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
 
 import janoke.smartmirror.Config;
-import janoke.smartmirror.Mainframe;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 
 public class News extends VBox
 {
@@ -30,80 +27,49 @@ public class News extends VBox
 		setMaxSize(500,1000);
 		setMaxWidth(500);
 		newsLabel.setWrapText(true);
+		readRSSFeed();
 	}
 	
-	public String readRSSFeed(String urlAddress)
+	public void readRSSFeed()
 	{
+		String url = Config.getProperty("news");
+		SyndFeed feed = null;
 		try
 		{
-			URL rssUrl = new URL(urlAddress);
-			BufferedReader in = new BufferedReader(new InputStreamReader(rssUrl.openStream(), "UTF-8"));
-			String sourceCode = "";
-			String line;
-			
-		    while((line=in.readLine())!=null && counter <= 4)
-			{
-				if(line.contains("<title>"))
-				{
-					int firstPos = line.indexOf("<title>");
-					String temp = line.substring(firstPos);
-					temp = temp.replace("<title>","");
-					
-					int lastPos = temp.indexOf("</title>");
-					temp = temp.substring(0,lastPos);
-					
-					sourceCode += temp + "\n" ; 
-				}
-				
-				else if(line.contains("<description>"))
-				{
-					int firstPos = line.indexOf("<description>");
-					String temp = line.substring(firstPos);
-					temp = temp.replace("<description>","");
-					
-					int lastPos = temp.indexOf("</description>");
-					temp = temp.substring(0,lastPos);
-					
-					sourceCode += temp + "\n" ;
-					sourceCode += "\n";
-					counter++;
-				}
-				
-				else if(line.contains("<pubDate>"))
-				{
-					int firstPos = line.indexOf("<pubDate>");
-					String temp = line.substring(firstPos);
-					temp = temp.replace("<pubDate>","");
-					int lastPos = temp.indexOf("</pubDate>");
-					temp = temp.substring(0,lastPos);
-					
-					temp = temp.replace("+0100", "");
-					temp = temp.trim();
-					
-					sourceCode += temp + "\n" ;
-				}
-				
-			}	
-			in.close();
-			System.out.println("Pulled Newsfeed from: " + rssUrl);
-			return sourceCode;
-		} 
-		catch (MalformedURLException ue)
+			feed = new SyndFeedInput().build(new XmlReader(new URL(url)));
+		} catch (IllegalArgumentException e)
 		{
-			System.out.println("Malformed URL");
-			
-		}
-		catch (IOException ioe)
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e)
 		{
-			System.out.println("Something went wrong reading the contents");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FeedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return null;
-}
+		System.out.println(feed.getTitle());
+		
+		for(SyndEntry e : feed.getEntries())
+		{
+			e.getTitle();
+			e.getPublishedDate();
+			System.out.println(e.getDescription());
+		}
+	}
+
+
 	
 	public void init()
 	{
 		getChildren().add(newsLabel);
-		newsLabel.setText(readRSSFeed(Config.getProperty("news")));
+		//newsLabel.setText(readRSSFeed(Config.getProperty("news")));
 		
 		//Region bliblablup = ((Region) Mainframe.instance.getContentPane().getRight());
 		//double width = ((Region) Mainframe.instance.getContentPane().getRight()).getWidth();

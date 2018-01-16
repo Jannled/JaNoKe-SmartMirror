@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.8.0_31/jre/lib/ext/jfxrt.jar" sourcepath="C:/Program Files/Java/jdk1.8.0_45/javafx-src.zip"/>
 	<classpathentry kind="lib" path="rome-1.9.0.jar"/>
+	<classpathentry kind="lib" path="jdom2-2.0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
