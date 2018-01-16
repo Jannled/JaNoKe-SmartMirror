@@ -22,10 +22,14 @@ public class News extends VBox
 	
 	Label newsLabel = new Label();
 	
+	int counter = 0;
+	
 	public News()
 	{
 		init();
-
+		setMaxSize(500,1000);
+		setMaxWidth(500);
+		newsLabel.setWrapText(true);
 	}
 	
 	public String readRSSFeed(String urlAddress)
@@ -36,7 +40,8 @@ public class News extends VBox
 			BufferedReader in = new BufferedReader(new InputStreamReader(rssUrl.openStream(), "UTF-8"));
 			String sourceCode = "";
 			String line;
-			while((line=in.readLine())!=null)
+			
+		    while((line=in.readLine())!=null && counter <= 4)
 			{
 				if(line.contains("<title>"))
 				{
@@ -46,22 +51,24 @@ public class News extends VBox
 					
 					int lastPos = temp.indexOf("</title>");
 					temp = temp.substring(0,lastPos);
-					sourceCode += temp + "\n" ; 
 					
+					sourceCode += temp + "\n" ; 
 				}
+				
 				else if(line.contains("<description>"))
 				{
 					int firstPos = line.indexOf("<description>");
 					String temp = line.substring(firstPos);
 					temp = temp.replace("<description>","");
 					
-					
-					
 					int lastPos = temp.indexOf("</description>");
 					temp = temp.substring(0,lastPos);
-					sourceCode += temp + "\n" ;   
-				
+					
+					sourceCode += temp + "\n" ;
+					sourceCode += "\n";
+					counter++;
 				}
+				
 				else if(line.contains("<pubDate>"))
 				{
 					int firstPos = line.indexOf("<pubDate>");
@@ -74,8 +81,9 @@ public class News extends VBox
 					temp = temp.trim();
 					
 					sourceCode += temp + "\n" ;
-				}   	
-			}					
+				}
+				
+			}	
 			in.close();
 			System.out.println("Pulled Newsfeed from: " + rssUrl);
 			return sourceCode;
@@ -97,8 +105,8 @@ public class News extends VBox
 		getChildren().add(newsLabel);
 		newsLabel.setText(readRSSFeed(Config.getProperty("news")));
 		
-		Region bliblablup = ((Region) Mainframe.instance.getContentPane().getRight());
-		double width = ((Region) Mainframe.instance.getContentPane().getRight()).getWidth();
+		//Region bliblablup = ((Region) Mainframe.instance.getContentPane().getRight());
+		//double width = ((Region) Mainframe.instance.getContentPane().getRight()).getWidth();
 		//setMaxSize(((Region) Mainframe.instance.getContentPane().getRight()).getWidth(), Label.USE_PREF_SIZE);
 	}
 	
